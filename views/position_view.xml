@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="position_form_view" model="ir.ui.view">
+            <field name="name">mesa.position.form</field>
+            <field name="model">mesa.position</field>
+            <field name="arch" type="xml">
+                <form string="Position">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="title" placeholder="Title"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="base_pay"/>
+                            </group>
+                            <group>
+                                <field name="department"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="position_tree_view" model="ir.ui.view">
+            <field name="name">mesa.position.tree</field>
+            <field name="model">mesa.position</field>
+            <field name="arch" type="xml">
+                <tree string="Position">
+                    <field name="title"/>
+                    <field name="department"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="position_search_view" model="ir.ui.view">
+            <field name="name">mesa.position.search</field>
+            <field name="model">mesa.position</field>
+            <field name="arch" type="xml">
+                <search string="Position">
+                    <field name="title"/>
+                    <field name="department"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="position_act_window" model="ir.actions.act_window">
+            <field name="name">Position</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.position</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There are no positions yet, click here to add one.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Position" id="position_menu" parent="store_root" action="position_act_window" sequence="20"/>
+
+    </data>
+</odoo>

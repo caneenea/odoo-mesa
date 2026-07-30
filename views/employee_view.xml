@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="employee_form_view" model="ir.ui.view">
+            <field name="name">mesa.employee.form</field>
+            <field name="model">mesa.employee</field>
+            <field name="arch" type="xml">
+                <form string="Employee">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Name"/>
+                                <field name="surname" placeholder="Surname"/>
+
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="position_id"/>
+                                <field name="salary"/>
+                                <field name="birth_date"/>
+                                <field name="hire_date"/>
+                                <field name='last_date'/>
+
+                            </group>
+                            <group>
+                                <field name="phone"/>
+                                <field name="email"/>
+                                <field name="address"/>
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="employee_tree_view" model="ir.ui.view">
+            <field name="name">mesa.employee.tree</field>
+            <field name="model">mesa.employee</field>
+            <field name="arch" type="xml">
+                <tree string="Employee">
+                    <field name="name"/>
+                    <field name="surname"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="employee_search_view" model="ir.ui.view">
+            <field name="name">mesa.employee.search</field>
+            <field name="model">mesa.employee</field>
+            <field name="arch" type="xml">
+                <search string="Employee">
+                    <field name = "name" />
+                    <field name = "surname" />
+                    <field name = "salary" />
+                    <field name = "last_date" />
+
+
+                </search>
+            </field>
+        </record>
+
+        <record id="employee_act_window" model="ir.actions.act_window">
+            <field name="name">Employee</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.employee</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new Employee.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="store_root" name="Store" sequence="10"/>
+        <menuitem name="Employee" id="employee_menu" parent="store_root" action="employee_act_window" sequence = "10"/>
+
+    </data>
+</odoo>

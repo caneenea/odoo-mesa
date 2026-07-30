@@ -1,0 +1,18 @@
+
+{
+    'name': 'Mesa',
+    'version': '1.0',
+    'summary': 'Restaurant',
+    'description': 'Mesa',
+    'category': 'My Project',
+    'author': 'Enea Cane',
+    'website': 'Website',
+    'depends': ['base'],
+    'data': ['views/employee_view.xml',
+             'views/position_view.xml'
+             ],
+    'demo': [],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+}
