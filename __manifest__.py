@@ -9,7 +9,9 @@
     'website': 'Website',
     'depends': ['base'],
     'data': ['views/employee_view.xml',
-             'views/position_view.xml'
+             'views/position_view.xml',
+             'views/guest_view.xml',
+             'views/table_view.xml',
              ],
     'demo': [],
     'installable': True,

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="table_form_view" model="ir.ui.view">
+            <field name="name">mesa.table.form</field>
+            <field name="model">mesa.table</field>
+            <field name="arch" type="xml">
+                <form string="Table">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="table_num" placeholder="Table Number"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="table_location"/>
+                            </group>
+                            <group>
+                                <field name="table_status"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="table_tree_view" model="ir.ui.view">
+            <field name="name">mesa.table.tree</field>
+            <field name="model">mesa.table</field>
+            <field name="arch" type="xml">
+                <tree string="Table">
+                    <field name="table_num"/>
+                    <field name="table_status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="table_search_view" model="ir.ui.view">
+            <field name="name">mesa.table.search</field>
+            <field name="model">mesa.table</field>
+            <field name="arch" type="xml">
+                <search string="Table">
+                    <field name="table_num"/>
+                    <field name="table_status"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="table_act_window" model="ir.actions.act_window">
+            <field name="name">Table</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.table</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Table" id="table_menu" parent="store_root" action="table_act_window" sequence = "40"/>
+
+    </data>
+</odoo>
