@@ -1,8 +1,9 @@
 from odoo import fields, models, api
 
 
-class ModelName(models.Model):
-    _name = 'ProjectName.TableName'
-    _description = 'Description'
+class ReservationMesa(models.Model):
+    _name = 'mesa.reservation'
+    _description = 'Reservation Mesa'
 
-    name = fields.Char()
+    reservation_time = fields.Datetime(string='Reservation Time', required=True)
+    party_size = fields.Char(string='Party Size', required=True)
