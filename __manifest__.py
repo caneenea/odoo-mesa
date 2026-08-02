@@ -13,6 +13,7 @@
              'views/guest_view.xml',
              'views/table_view.xml',
              'views/reservation_view.xml',
+             'views/visit_view.xml',
              ],
     'demo': [],
     'installable': True,
