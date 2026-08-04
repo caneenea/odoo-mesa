@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="order_form_view" model="ir.ui.view">
+            <field name="name">mesa.order.form</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <form string="Order">
+                    <sheet>
+                        <div class="oe_title">
+                        </div>
+                        <group>
+                            <group>
+                                <field name="time"/>
+                                <field name="status"/>
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="order_tree_view" model="ir.ui.view">
+            <field name="name">mesa.order.tree</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <tree string="Order">
+                    <field name="time"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="order_search_view" model="ir.ui.view">
+            <field name="name">mesa.order.search</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <search string="order">
+                    <field name="time"/>
+                    <field name="status"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="order_act_window" model="ir.actions.act_window">
+            <field name="name">Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new Order.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Order" id="order_menu" parent="store_root" action="order_act_window" sequence = "100"/>
+
+    </data>
+</odoo>

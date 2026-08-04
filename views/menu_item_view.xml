@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="menu_item_form_view" model="ir.ui.view">
+            <field name="name">mesa.menu_item.form</field>
+            <field name="model">mesa.menu_item</field>
+            <field name="arch" type="xml">
+                <form string="Menu Item">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="price"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="menu_item_tree_view" model="ir.ui.view">
+            <field name="name">mesa.menu_item.tree</field>
+            <field name="model">mesa.menu_item</field>
+            <field name="arch" type="xml">
+                <tree string="Menu item">
+                    <field name="name"/>
+                    <field name="price"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="menu_item_search_view" model="ir.ui.view">
+            <field name="name">mesa.menu_item.search</field>
+            <field name="model">mesa.menu_item</field>
+            <field name="arch" type="xml">
+                <search string="Menu Item">
+                    <field name="name"/>
+                    <field name="price"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="menu_item_act_window" model="ir.actions.act_window">
+            <field name="name">Menu Item</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.menu_item</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Menu Item" id="menu_item_menu" parent="store_root" action="menu_item_act_window" sequence = "70"/>
+
+    </data>
+</odoo>

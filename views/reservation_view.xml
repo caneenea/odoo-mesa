@@ -10,12 +10,14 @@
                     <sheet>
                         <div class="oe_title">
                             <h1>
-                                <field name="reservation_time" placeholder="Reservation Time"/>
+                                <field name="reservation_name" placeholder="Reservation Name"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="party_size"/>
+                                <field name="reservation_time"/>
+
                             </group>
                         </group>
                     </sheet>
@@ -28,6 +30,7 @@
             <field name="model">mesa.reservation</field>
             <field name="arch" type="xml">
                 <tree string="Reservation">
+                    <field name="reservation_name"/>
                     <field name="reservation_time"/>
                     <field name="party_size"/>
                 </tree>
@@ -39,6 +42,7 @@
             <field name="model">mesa.reservation</field>
             <field name="arch" type="xml">
                 <search string="Reservation">
+                    <field name="reservation_name"/>
                     <field name="reservation_time"/>
                     <field name="party_size"/>
                 </search>
