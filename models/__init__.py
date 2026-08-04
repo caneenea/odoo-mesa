@@ -7,4 +7,7 @@ from . import visit
 from . import menu_item
 from . import station
 from . import order
+from . import order_item
+from . import payment
+
 

@@ -17,6 +17,8 @@
              'views/menu_item_view.xml',
              'views/station_view.xml',
              "views/order_view.xml",
+             'views/order_item_view.xml',
+             'views/payment_view.xml',
              ],
     'demo': [],
     'installable': True,

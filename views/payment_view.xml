@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="payment_form_view" model="ir.ui.view">
+            <field name="name">mesa.payment.form</field>
+            <field name="model">mesa.payment</field>
+            <field name="arch" type="xml">
+                <form string="Payment">
+                    <sheet>
+                        <group>
+                            <field name="visit_id"/>
+                            <field name="amount"/>
+                            <field name="tip"/>
+                            <field name="method"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="payment_tree_view" model="ir.ui.view">
+            <field name="name">mesa.payment.tree</field>
+            <field name="model">mesa.payment</field>
+            <field name="arch" type="xml">
+                <tree string="Payment">
+                    <field name="visit_id"/>
+                    <field name="amount"/>
+                    <field name="tip"/>
+                    <field name="method"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="payment_search_view" model="ir.ui.view">
+            <field name="name">mesa.payment.search</field>
+            <field name="model">mesa.payment</field>
+            <field name="arch" type="xml">
+                <search string="Payment">
+                    <field name="visit_id"/>
+                    <field name="method"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="payment_act_window" model="ir.actions.act_window">
+            <field name="name">Payment</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.payment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new Payment.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Payment" id="payment_menu" parent="store_root" action="payment_act_window" sequence="120"/>
+
+    </data>
+</odoo>
