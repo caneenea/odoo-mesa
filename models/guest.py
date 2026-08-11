@@ -11,3 +11,4 @@ class GuestMesa(models.Model):
     regular = fields.Boolean(string='Regular', required=True, default=False)
     preferred_location = fields.Selection(string= 'Preferred Location',required = True,selection = [('inside', 'Inside'),('porch', 'Porch'),('fountain', 'Fountain')])
     notes = fields.Text(string='Notes', required=False)
+    reservation_ids = fields.One2many("mesa.reservation","guest_id",string="Reservations")

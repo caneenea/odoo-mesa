@@ -14,7 +14,7 @@
                 </group>
                 <notebook>
                     <page string="Items">
-                        <field name="order_item_ids">
+                        <field name="order_item_ids" >
                             <tree editable="bottom">
                                 <field name="menu_item_id"/>
                                 <field name="quantity"/>

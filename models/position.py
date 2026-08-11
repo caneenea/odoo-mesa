@@ -15,7 +15,7 @@ class PositionMesa(models.Model):
     department = fields.Char(string = "Department", required=True)
 
     employee_ids = fields.One2many(
-        'mesa.employee',
+        'mesa.employee',  
         'position_id',
         string="Employees"
     )
