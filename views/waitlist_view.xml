@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="waitlist_form_view" model="ir.ui.view">
+            <field name="name">mesa.waitlist.form</field>
+            <field name="model">mesa.waitlist</field>
+            <field name="arch" type="xml">
+                <form string="Waitlist">
+                    <sheet>
+                        <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
+                        <group>
+                            <group>
+                                <field name="guest_id"/>
+                                <field name="guest_name" placeholder="Name to call, if no guest is linked"/>
+                                <field name="party_size"/>
+                            </group>
+                            <group>
+                                <field name="time_added"/>
+                                <field name="table_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="waitlist_tree_view" model="ir.ui.view">
+            <field name="name">mesa.waitlist.tree</field>
+            <field name="model">mesa.waitlist</field>
+            <field name="arch" type="xml">
+                <tree string="Waitlist" decoration-muted="status in ('seated', 'cancelled')">
+                    <field name="time_added"/>
+                    <field name="guest_id"/>
+                    <field name="guest_name"/>
+                    <field name="party_size"/>
+                    <field name="status" widget="badge"
+                           decoration-warning="status == 'waiting'"
+                           decoration-success="status == 'seated'"
+                           decoration-danger="status == 'cancelled'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="waitlist_search_view" model="ir.ui.view">
+            <field name="name">mesa.waitlist.search</field>
+            <field name="model">mesa.waitlist</field>
+            <field name="arch" type="xml">
+                <search string="Waitlist">
+                    <field name="guest_id"/>
+                    <field name="guest_name"/>
+                    <separator/>
+                    <filter string="Waiting" name="filter_waiting" domain="[('status', '=', 'waiting')]"/>
+                    <filter string="Seated" name="filter_seated" domain="[('status', '=', 'seated')]"/>
+                    <filter string="Cancelled" name="filter_cancelled" domain="[('status', '=', 'cancelled')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="waitlist_act_window" model="ir.actions.act_window">
+            <field name="name">Waitlist</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.waitlist</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="waitlist_search_view"/>
+            <field name="context">{'search_default_filter_waiting': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add your first waitlist entry
+                </p>
+                <p>
+                    The waitlist tracks walk-in parties waiting for a table, with an optional guest link.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Waitlist" id="waitlist_menu" parent="guests_menu" action="waitlist_act_window" sequence="30"/>
+
+    </data>
+</odoo>

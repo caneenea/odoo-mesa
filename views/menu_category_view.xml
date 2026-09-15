@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="menu_category_form_view" model="ir.ui.view">
+            <field name="name">mesa.menu_category.form</field>
+            <field name="model">mesa.menu_category</field>
+            <field name="arch" type="xml">
+                <form string="Menu Category">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="menu_category_tree_view" model="ir.ui.view">
+            <field name="name">mesa.menu_category.tree</field>
+            <field name="model">mesa.menu_category</field>
+            <field name="arch" type="xml">
+                <tree string="Menu Categories" editable="bottom">
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="menu_category_search_view" model="ir.ui.view">
+            <field name="name">mesa.menu_category.search</field>
+            <field name="model">mesa.menu_category</field>
+            <field name="arch" type="xml">
+                <search string="Menu Categories">
+                    <field name="name"/>
+                    <field name="description"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="menu_category_act_window" model="ir.actions.act_window">
+            <field name="name">Menu Categories</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.menu_category</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="menu_category_search_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first menu category
+                </p>
+                <p>
+                    Categories group menu items together, e.g. Appetizers, Entrees, Desserts.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Menu Category" id="menu_category_menu" parent="menu_catalog_menu" action="menu_category_act_window" sequence="20"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="shift_form_view" model="ir.ui.view">
+            <field name="name">mesa.shift.form</field>
+            <field name="model">mesa.shift</field>
+            <field name="arch" type="xml">
+                <form string="Shift">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="employee_id"/>
+                            </group>
+                            <group>
+                                <field name="start_time"/>
+                                <field name="end_time" placeholder="Still on shift"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="shift_tree_view" model="ir.ui.view">
+            <field name="name">mesa.shift.tree</field>
+            <field name="model">mesa.shift</field>
+            <field name="arch" type="xml">
+                <tree string="Shifts" decoration-muted="end_time">
+                    <field name="employee_id"/>
+                    <field name="start_time"/>
+                    <field name="end_time"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="shift_search_view" model="ir.ui.view">
+            <field name="name">mesa.shift.search</field>
+            <field name="model">mesa.shift</field>
+            <field name="arch" type="xml">
+                <search string="Shifts">
+                    <field name="employee_id"/>
+                    <field name="start_time"/>
+                    <separator/>
+                    <filter string="Currently Clocked In" name="filter_open" domain="[('end_time', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Date" name="group_by_date" context="{'group_by': 'start_time:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="shift_act_window" model="ir.actions.act_window">
+            <field name="name">Shifts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.shift</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="shift_search_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first shift
+                </p>
+                <p>
+                    Shifts track when an employee started and ended working.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Shift" id="shift_menu" parent="staffing_menu" action="shift_act_window" sequence="30"/>
+
+    </data>
+</odoo>
