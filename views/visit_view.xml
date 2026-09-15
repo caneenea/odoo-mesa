@@ -7,6 +7,11 @@
             <field name="model">mesa.visit</field>
             <field name="arch" type="xml">
                 <form string="Visit">
+                    <header>
+                        <button name="action_close_visit" type="object" string="Close Visit" class="oe_highlight" invisible="state != 'open'"/>
+                        <button name="action_reopen_visit" type="object" string="Reopen Visit" invisible="state != 'closed'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <h1>
@@ -15,9 +20,40 @@
                         </div>
                         <group>
                             <group>
-                                <field name="time_closed"/>
+                                <field name="time_closed" placeholder="Still open"/>
+                                <field name="table_id"/>
+                            </group>
+                            <group>
+                                <field name="server_id"/>
+                                <field name="reservation_id"/>
+                            </group>
+                            <group>
+                                <field name="total"/>
+                                <field name="amount_paid"/>
+                                <field name="balance_due"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Orders">
+                                <field name="order_ids">
+                                    <tree>
+                                        <field name="time"/>
+                                        <field name="status"/>
+                                        <field name="state"/>
+                                        <field name="total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Payments">
+                                <field name="payment_ids">
+                                    <tree>
+                                        <field name="amount"/>
+                                        <field name="tip"/>
+                                        <field name="method"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -27,9 +63,14 @@
             <field name="name">mesa.visit.tree</field>
             <field name="model">mesa.visit</field>
             <field name="arch" type="xml">
-                <tree string="Visit">
+                <tree string="Visits" decoration-muted="state == 'closed'">
                     <field name="time_opened"/>
                     <field name="time_closed"/>
+                    <field name="table_id"/>
+                    <field name="server_id"/>
+                    <field name="state"/>
+                    <field name="total"/>
+                    <field name="balance_due"/>
                 </tree>
             </field>
         </record>
@@ -38,28 +79,42 @@
             <field name="name">mesa.visit.search</field>
             <field name="model">mesa.visit</field>
             <field name="arch" type="xml">
-                <search string="Visit">
+                <search string="Visits">
                     <field name="time_opened"/>
                     <field name="time_closed"/>
-
-
+                    <field name="table_id"/>
+                    <field name="server_id"/>
+                    <separator/>
+                    <filter string="Open" name="filter_open" domain="[('state', '=', 'open')]"/>
+                    <filter string="Closed" name="filter_closed" domain="[('state', '=', 'closed')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Opened Date" name="group_by_opened" context="{'group_by': 'time_opened:day'}"/>
+                        <filter string="Table" name="group_by_table" context="{'group_by': 'table_id'}"/>
+                        <filter string="Server" name="group_by_server" context="{'group_by': 'server_id'}"/>
+                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="visit_act_window" model="ir.actions.act_window">
-            <field name="name">Visit</field>
+            <field name="name">Visits</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.visit</field>
             <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="visit_search_view"/>
+            <field name="context">{'search_default_filter_open': 1}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new ModelTitle.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first visit
+                </p>
+                <p>
+                    A visit represents a dining session, grouping the orders placed and payments collected during it.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Visit" id="visit_menu" parent="store_root" action="visit_act_window" sequence = "60"/>
+        <menuitem name="Visit" id="visit_menu" parent="operations_menu" action="visit_act_window" sequence="10"/>
 
     </data>
 </odoo>

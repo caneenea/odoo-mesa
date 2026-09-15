@@ -12,25 +12,41 @@
                             <h1>
                                 <field name="name" placeholder="Name"/>
                                 <field name="surname" placeholder="Surname"/>
-
                             </h1>
                         </div>
                         <group>
-                            <group>
+                            <group string="Employment">
                                 <field name="position_id"/>
                                 <field name="salary"/>
-                                <field name="birth_date"/>
                                 <field name="hire_date"/>
-                                <field name='last_date'/>
-
+                                <field name="last_date"/>
                             </group>
-                            <group>
-                                <field name="phone"/>
-                                <field name="email"/>
+                            <group string="Personal &amp; Contact">
+                                <field name="birth_date"/>
+                                <field name="phone" widget="phone"/>
+                                <field name="email" widget="email"/>
                                 <field name="address"/>
-
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Shifts">
+                                <field name="shift_ids">
+                                    <tree>
+                                        <field name="start_time"/>
+                                        <field name="end_time"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Visits">
+                                <field name="visit_ids">
+                                    <tree>
+                                        <field name="time_opened"/>
+                                        <field name="time_closed"/>
+                                        <field name="table_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -40,9 +56,14 @@
             <field name="name">mesa.employee.tree</field>
             <field name="model">mesa.employee</field>
             <field name="arch" type="xml">
-                <tree string="Employee">
+                <tree string="Employees">
                     <field name="name"/>
                     <field name="surname"/>
+                    <field name="position_id"/>
+                    <field name="phone" widget="phone" optional="show"/>
+                    <field name="email" widget="email" optional="hide"/>
+                    <field name="hire_date" optional="show"/>
+                    <field name="last_date" optional="hide"/>
                 </tree>
             </field>
         </record>
@@ -51,31 +72,49 @@
             <field name="name">mesa.employee.search</field>
             <field name="model">mesa.employee</field>
             <field name="arch" type="xml">
-                <search string="Employee">
-                    <field name = "name" />
-                    <field name = "surname" />
-                    <field name = "salary" />
-                    <field name = "last_date" />
-
-
+                <search string="Employees">
+                    <field name="name"/>
+                    <field name="surname"/>
+                    <field name="position_id"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <separator/>
+                    <filter string="Currently Employed" name="filter_active_staff" domain="[('last_date', '=', False)]"/>
+                    <filter string="No Longer Employed" name="filter_former_staff" domain="[('last_date', '!=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Position" name="group_by_position" context="{'group_by': 'position_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="employee_act_window" model="ir.actions.act_window">
-            <field name="name">Employee</field>
+            <field name="name">Employees</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.employee</field>
             <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="employee_search_view"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new Employee.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first employee
+                </p>
+                <p>
+                    Employees are staff members assigned to a position, such as servers, cooks, or hosts.
                 </p>
             </field>
         </record>
 
         <menuitem id="store_root" name="Store" sequence="10"/>
-        <menuitem name="Employee" id="employee_menu" parent="store_root" action="employee_act_window" sequence = "10"/>
+
+        <!-- Top-level submenus grouping the Mesa models. Defined here since this
+             view file loads first, before any other file needs them as a parent. -->
+        <menuitem id="staffing_menu" name="Staffing" parent="store_root" sequence="10"/>
+        <menuitem id="floor_menu" name="Floor" parent="store_root" sequence="20"/>
+        <menuitem id="guests_menu" name="Guests" parent="store_root" sequence="30"/>
+        <menuitem id="menu_catalog_menu" name="Menu" parent="store_root" sequence="40"/>
+        <menuitem id="operations_menu" name="Operations" parent="store_root" sequence="50"/>
+
+        <menuitem name="Employee" id="employee_menu" parent="staffing_menu" action="employee_act_window" sequence="10"/>
 
     </data>
 </odoo>

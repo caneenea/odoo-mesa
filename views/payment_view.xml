@@ -9,10 +9,15 @@
                 <form string="Payment">
                     <sheet>
                         <group>
-                            <field name="visit_id"/>
-                            <field name="amount"/>
-                            <field name="tip"/>
-                            <field name="method"/>
+                            <group>
+                                <field name="visit_id"/>
+                                <field name="guest_id"/>
+                                <field name="method" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                            <group>
+                                <field name="amount"/>
+                                <field name="tip"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
@@ -23,12 +28,36 @@
             <field name="name">mesa.payment.tree</field>
             <field name="model">mesa.payment</field>
             <field name="arch" type="xml">
-                <tree string="Payment">
+                <tree string="Payments">
                     <field name="visit_id"/>
+                    <field name="guest_id"/>
+                    <field name="method"/>
                     <field name="amount"/>
                     <field name="tip"/>
-                    <field name="method"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="payment_pivot_view" model="ir.ui.view">
+            <field name="name">mesa.payment.pivot</field>
+            <field name="model">mesa.payment</field>
+            <field name="arch" type="xml">
+                <pivot string="Payments">
+                    <field name="method" type="row"/>
+                    <field name="amount" type="measure"/>
+                    <field name="tip" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="payment_graph_view" model="ir.ui.view">
+            <field name="name">mesa.payment.graph</field>
+            <field name="model">mesa.payment</field>
+            <field name="arch" type="xml">
+                <graph string="Payments" type="bar">
+                    <field name="method"/>
+                    <field name="amount" type="measure"/>
+                </graph>
             </field>
         </record>
 
@@ -36,26 +65,39 @@
             <field name="name">mesa.payment.search</field>
             <field name="model">mesa.payment</field>
             <field name="arch" type="xml">
-                <search string="Payment">
+                <search string="Payments">
                     <field name="visit_id"/>
+                    <field name="guest_id"/>
                     <field name="method"/>
+                    <separator/>
+                    <filter string="Cash" name="filter_cash" domain="[('method', '=', 'cash')]"/>
+                    <filter string="Card" name="filter_card" domain="[('method', '=', 'card')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Method" name="group_by_method" context="{'group_by': 'method'}"/>
+                        <filter string="Visit" name="group_by_visit" context="{'group_by': 'visit_id'}"/>
+                        <filter string="Guest" name="group_by_guest" context="{'group_by': 'guest_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="payment_act_window" model="ir.actions.act_window">
-            <field name="name">Payment</field>
+            <field name="name">Payments</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.payment</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="search_view_id" ref="payment_search_view"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new Payment.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first payment
+                </p>
+                <p>
+                    Payments record the amount, tip, and method collected against a visit.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Payment" id="payment_menu" parent="store_root" action="payment_act_window" sequence="120"/>
+        <menuitem name="Payment" id="payment_menu" parent="operations_menu" action="payment_act_window" sequence="40"/>
 
     </data>
 </odoo>

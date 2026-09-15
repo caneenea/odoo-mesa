@@ -8,16 +8,16 @@
             <field name="arch" type="xml">
                 <form string="Order Item">
                     <sheet>
-                        <div class="oe_title">
-                        </div>
                         <group>
                             <group>
+                                <field name="order_id"/>
                                 <field name="menu_item_id"/>
                                 <field name="quantity"/>
-                                <field name="order_id"/>
+                                <field name="price"/>
+                                <field name="total"/>
                             </group>
                             <group>
-                                <field name="notes"/>
+                                <field name="notes" placeholder="Special preparation instructions..."/>
                             </group>
                         </group>
                     </sheet>
@@ -29,12 +29,13 @@
             <field name="name">mesa.order_item.tree</field>
             <field name="model">mesa.order_item</field>
             <field name="arch" type="xml">
-                <tree string="order_item">
+                <tree string="Order Items">
+                    <field name="order_id"/>
                     <field name="menu_item_id"/>
                     <field name="quantity"/>
-                    <field name="order_id"/>
-                    <field name="notes"/>
-
+                    <field name="price"/>
+                    <field name="total"/>
+                    <field name="notes" optional="hide"/>
                 </tree>
             </field>
         </record>
@@ -43,25 +44,34 @@
             <field name="name">mesa.order_item.search</field>
             <field name="model">mesa.order_item</field>
             <field name="arch" type="xml">
-                <search string="order_item">
-                     <field name="menu_item_id"/>
+                <search string="Order Items">
+                    <field name="order_id"/>
+                    <field name="menu_item_id"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Menu Item" name="group_by_menu_item" context="{'group_by': 'menu_item_id'}"/>
+                        <filter string="Order" name="group_by_order" context="{'group_by': 'order_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="order_item_act_window" model="ir.actions.act_window">
-            <field name="name">Order Item</field>
+            <field name="name">Order Items</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.order_item</field>
             <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="order_item_search_view"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new OrderItem.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first order item
+                </p>
+                <p>
+                    Order items are the individual menu item lines that make up an order.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Order Item" id="order_item_menu" parent="store_root" action="order_item_act_window" sequence = "110"/>
+        <menuitem name="Order Item" id="order_item_menu" parent="operations_menu" action="order_item_act_window" sequence="30"/>
 
     </data>
 </odoo>

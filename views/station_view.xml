@@ -9,12 +9,20 @@
                 <form string="Station">
                     <sheet>
                         <div class="oe_title">
-                        </div>
-                        <group>
-                            <group>
+                            <h1>
                                 <field name="type"/>
-                            </group>
-                        </group>
+                            </h1>
+                        </div>
+                        <notebook>
+                            <page string="Menu Items">
+                                <field name="menu_item_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="price"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -24,7 +32,7 @@
             <field name="name">mesa.station.tree</field>
             <field name="model">mesa.station</field>
             <field name="arch" type="xml">
-                <tree string="Station">
+                <tree string="Stations">
                     <field name="type"/>
                 </tree>
             </field>
@@ -34,25 +42,29 @@
             <field name="name">mesa.station.search</field>
             <field name="model">mesa.station</field>
             <field name="arch" type="xml">
-                <search string="Station">
+                <search string="Stations">
                     <field name="type"/>
                 </search>
             </field>
         </record>
 
         <record id="station_act_window" model="ir.actions.act_window">
-            <field name="name">Station</field>
+            <field name="name">Stations</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.station</field>
             <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="station_search_view"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new Station.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first station
+                </p>
+                <p>
+                    Stations represent the kitchen prep areas, such as saute, broil, or dessert.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Station" id="station_menu" parent="store_root" action="station_act_window" sequence = "90"/>
+        <menuitem name="Station" id="station_menu" parent="floor_menu" action="station_act_window" sequence="20"/>
 
     </data>
 </odoo>

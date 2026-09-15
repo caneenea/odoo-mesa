@@ -10,17 +10,29 @@
                     <sheet>
                         <div class="oe_title">
                             <h1>
-                                <field name="guest_id" placeholder = "Guest"/>
+                                <field name="guest_id" placeholder="Guest"/>
                             </h1>
                         </div>
                         <group>
                             <group>
-                                <field name="guest_name"/>
+                                <field name="guest_name" placeholder="Name to book under, if no guest is linked"/>
                                 <field name="party_size"/>
+                            </group>
+                            <group>
                                 <field name="reservation_time"/>
-
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Visits">
+                                <field name="visit_ids">
+                                    <tree>
+                                        <field name="time_opened"/>
+                                        <field name="time_closed"/>
+                                        <field name="table_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -30,10 +42,10 @@
             <field name="name">mesa.reservation.tree</field>
             <field name="model">mesa.reservation</field>
             <field name="arch" type="xml">
-                <tree string="Reservation">
+                <tree string="Reservations">
+                    <field name="reservation_time"/>
                     <field name="guest_id"/>
                     <field name="guest_name"/>
-                    <field name="reservation_time"/>
                     <field name="party_size"/>
                 </tree>
             </field>
@@ -43,28 +55,39 @@
             <field name="name">mesa.reservation.search</field>
             <field name="model">mesa.reservation</field>
             <field name="arch" type="xml">
-                <search string="Reservation">
+                <search string="Reservations">
                     <field name="guest_id"/>
                     <field name="guest_name"/>
                     <field name="reservation_time"/>
-                    <field name="party_size"/>
+                    <separator/>
+                    <filter string="Today" name="filter_today"
+                            domain="[('reservation_time', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                                     ('reservation_time', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Guest" name="group_by_guest" context="{'group_by': 'guest_id'}"/>
+                        <filter string="Reservation Date" name="group_by_date" context="{'group_by': 'reservation_time:day'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="reservation_act_window" model="ir.actions.act_window">
-            <field name="name">Reservation</field>
+            <field name="name">Reservations</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.reservation</field>
             <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="reservation_search_view"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new Reservation.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first reservation
+                </p>
+                <p>
+                    Reservations can be booked under a known guest or a name for walk-in bookings.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Reservation" id="reservation_menu" parent="store_root" action="reservation_act_window" sequence = "50"/>
+        <menuitem name="Reservation" id="reservation_menu" parent="guests_menu" action="reservation_act_window" sequence="20"/>
 
     </data>
 </odoo>

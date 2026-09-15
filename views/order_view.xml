@@ -3,39 +3,99 @@
     <data>
 
         <record id="order_form_view" model="ir.ui.view">
-    <field name="name">mesa.order.form</field>
-    <field name="model">mesa.order</field>
-    <field name="arch" type="xml">
-        <form string="Order">
-            <sheet>
-                <group>
-                    <field name="time"/>
-                    <field name="status"/>
-                </group>
-                <notebook>
-                    <page string="Items">
-                        <field name="order_item_ids" >
-                            <tree editable="bottom">
-                                <field name="menu_item_id"/>
-                                <field name="quantity"/>
-                                <field name="notes"/>
-                            </tree>
-                        </field>
-                    </page>
-                </notebook>
-            </sheet>
-        </form>
-    </field>
-</record>
+            <field name="name">mesa.order.form</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <form string="Order">
+                    <header>
+                        <button name="action_send" type="object" string="Send to Kitchen" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_serve" type="object" string="Mark Served" class="oe_highlight" invisible="state != 'sent'"/>
+                        <button name="action_bill" type="object" string="Bill" class="oe_highlight" invisible="state != 'served'"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state in ('billed', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,served,billed"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="visit_id"/>
+                            <field name="time"/>
+                            <field name="status" widget="badge" decoration-danger="status == 'rush'" decoration-success="status == 'normal'"/>
+                            <field name="total"/>
+                        </group>
+                        <notebook>
+                            <page string="Items">
+                                <field name="order_item_ids">
+                                    <tree editable="bottom">
+                                        <field name="menu_item_id"/>
+                                        <field name="quantity"/>
+                                        <field name="price"/>
+                                        <field name="total"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
         <record id="order_tree_view" model="ir.ui.view">
             <field name="name">mesa.order.tree</field>
             <field name="model">mesa.order</field>
             <field name="arch" type="xml">
-                <tree string="Order">
+                <tree string="Orders" decoration-danger="status == 'rush'" decoration-muted="state == 'cancelled'">
                     <field name="time"/>
-                    <field name="status"/>
+                    <field name="visit_id"/>
+                    <field name="status" widget="badge"
+                           decoration-danger="status == 'rush'"
+                           decoration-success="status == 'normal'"/>
+                    <field name="state" widget="badge"/>
+                    <field name="total"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="order_kanban_view" model="ir.ui.view">
+            <field name="name">mesa.order.kanban</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="status">
+                    <field name="time"/>
+                    <field name="visit_id"/>
+                    <field name="status"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_card">
+                                <div class="oe_kanban_content">
+                                    <strong><field name="visit_id"/></strong>
+                                    <div><field name="time"/></div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="order_pivot_view" model="ir.ui.view">
+            <field name="name">mesa.order.pivot</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <pivot string="Orders">
+                    <field name="status" type="row"/>
+                    <field name="time" interval="day" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="order_graph_view" model="ir.ui.view">
+            <field name="name">mesa.order.graph</field>
+            <field name="model">mesa.order</field>
+            <field name="arch" type="xml">
+                <graph string="Orders" type="bar">
+                    <field name="time" interval="day"/>
+                    <field name="status"/>
+                </graph>
             </field>
         </record>
 
@@ -43,26 +103,45 @@
             <field name="name">mesa.order.search</field>
             <field name="model">mesa.order</field>
             <field name="arch" type="xml">
-                <search string="order">
+                <search string="Orders">
+                    <field name="visit_id"/>
                     <field name="time"/>
                     <field name="status"/>
+                    <separator/>
+                    <filter string="Rush" name="filter_rush" domain="[('status', '=', 'rush')]"/>
+                    <filter string="Normal" name="filter_normal" domain="[('status', '=', 'normal')]"/>
+                    <separator/>
+                    <filter string="Today" name="filter_today"
+                            domain="[('time', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                                     ('time', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <separator/>
+                    <filter string="Active" name="filter_active_state" domain="[('state', 'not in', ('billed', 'cancelled'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Visit" name="group_by_visit" context="{'group_by': 'visit_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="order_act_window" model="ir.actions.act_window">
-            <field name="name">Order</field>
+            <field name="name">Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.order</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph</field>
+            <field name="search_view_id" ref="order_search_view"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new Order.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first order
+                </p>
+                <p>
+                    Orders belong to a visit and contain the menu items requested by the guests.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Order" id="order_menu" parent="store_root" action="order_act_window" sequence = "100"/>
+        <menuitem name="Order" id="order_menu" parent="operations_menu" action="order_act_window" sequence="20"/>
 
     </data>
 </odoo>

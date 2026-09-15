@@ -18,11 +18,45 @@
                                 <field name="table_location"/>
                             </group>
                             <group>
-                                <field name="table_status"/>
+                                <field name="table_status" widget="radio" options="{'horizontal': true}"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Visits">
+                                <field name="visit_ids">
+                                    <tree>
+                                        <field name="time_opened"/>
+                                        <field name="time_closed"/>
+                                        <field name="server_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="table_kanban_view" model="ir.ui.view">
+            <field name="name">mesa.table.kanban</field>
+            <field name="model">mesa.table</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="table_num"/>
+                    <field name="table_location"/>
+                    <field name="table_status"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_card">
+                                <div class="oe_kanban_content">
+                                    <strong>Table <field name="table_num"/></strong>
+                                    <div><field name="table_location"/></div>
+                                    <div><field name="table_status" widget="badge"/></div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
             </field>
         </record>
 
@@ -30,9 +64,13 @@
             <field name="name">mesa.table.tree</field>
             <field name="model">mesa.table</field>
             <field name="arch" type="xml">
-                <tree string="Table">
+                <tree string="Tables">
                     <field name="table_num"/>
-                    <field name="table_status"/>
+                    <field name="table_location"/>
+                    <field name="table_status" widget="badge"
+                           decoration-success="table_status == 'free'"
+                           decoration-danger="table_status == 'busy'"
+                           decoration-warning="table_status == 'needs_cleaning'"/>
                 </tree>
             </field>
         </record>
@@ -41,26 +79,40 @@
             <field name="name">mesa.table.search</field>
             <field name="model">mesa.table</field>
             <field name="arch" type="xml">
-                <search string="Table">
+                <search string="Tables">
                     <field name="table_num"/>
+                    <field name="table_location"/>
                     <field name="table_status"/>
+                    <separator/>
+                    <filter string="Free" name="filter_free" domain="[('table_status', '=', 'free')]"/>
+                    <filter string="Busy" name="filter_busy" domain="[('table_status', '=', 'busy')]"/>
+                    <filter string="Needs Cleaning" name="filter_needs_cleaning" domain="[('table_status', '=', 'needs_cleaning')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Location" name="group_by_location" context="{'group_by': 'table_location'}"/>
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'table_status'}"/>
+                    </group>
                 </search>
             </field>
         </record>
 
         <record id="table_act_window" model="ir.actions.act_window">
-            <field name="name">Table</field>
+            <field name="name">Tables</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mesa.table</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="table_search_view"/>
+            <field name="context">{'search_default_filter_free': 1}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is no examples click here to add new ModelTitle.
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first table
+                </p>
+                <p>
+                    Tables represent the physical seating in the restaurant, with a location and a current status.
                 </p>
             </field>
         </record>
 
-        <menuitem name="Table" id="table_menu" parent="store_root" action="table_act_window" sequence = "40"/>
+        <menuitem name="Table" id="table_menu" parent="floor_menu" action="table_act_window" sequence="10"/>
 
     </data>
 </odoo>

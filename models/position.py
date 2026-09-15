@@ -6,16 +6,19 @@ class PositionMesa(models.Model):
     _description = 'Employee Position'
     _rec_name = 'title'
 
-    title = fields.Selection(string='Title', required = True, selection = [('busser', 'Busser'),
-                                                                           ('server', 'Server'),
-                                                                           ('cook', 'Cook'),
-                                                                           ('host', 'Host'),]
-                             )
-    base_pay = fields.Float(string = "Base Pay", required=True)
-    department = fields.Char(string = "Department", required=True)
+    title = fields.Selection(string='Title', required=True, selection=[
+        ('busser', 'Busser'),
+        ('server', 'Server'),
+        ('cook', 'Cook'),
+        ('host', 'Host'),
+    ])
+    base_pay = fields.Float(string="Base Pay", required=True, help="Standard base pay for this position.")
+    department = fields.Char(string="Department", required=True)
 
     employee_ids = fields.One2many(
-        'mesa.employee',  
+        'mesa.employee',
         'position_id',
         string="Employees"
     )
+
+    _order = 'department, title'
