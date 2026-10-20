@@ -1,5 +1,5 @@
 from odoo import fields, models, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class WaitlistMesa(models.Model):
@@ -30,6 +30,19 @@ class WaitlistMesa(models.Model):
         for waitlist in self:
             if not waitlist.guest_id and not waitlist.guest_name:
                 raise ValidationError('Pick a guest or fill in the waitlist name.')
+
+    def action_seat(self):
+        to_seat = self.filtered(lambda waitlist: waitlist.status == 'waiting')
+        for waitlist in to_seat:
+            if not waitlist.table_id:
+                raise UserError('Pick a table before seating this party.')
+            # visit.create checks the table is free and marks it busy
+            self.env['mesa.visit'].create({'table_id': waitlist.table_id.id})
+        to_seat.write({'status': 'seated'})
+
+    def action_cancel(self):
+        to_cancel = self.filtered(lambda waitlist: waitlist.status == 'waiting')
+        to_cancel.write({'status': 'cancelled'})
 
     @api.depends('guest_id.name', 'guest_id.surname', 'guest_name', 'party_size')
     def _compute_name(self):

@@ -7,8 +7,12 @@
             <field name="model">mesa.waitlist</field>
             <field name="arch" type="xml">
                 <form string="Waitlist">
+                    <header>
+                        <button name="action_seat" type="object" string="Seat" class="oe_highlight" invisible="status != 'waiting'"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="status != 'waiting'"/>
+                        <field name="status" widget="statusbar"/>
+                    </header>
                     <sheet>
-                        <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
                         <group>
                             <group>
                                 <field name="guest_id"/>
@@ -17,7 +21,7 @@
                             </group>
                             <group>
                                 <field name="time_added"/>
-                                <field name="table_id"/>
+                                <field name="table_id" readonly="status != 'waiting'"/>
                             </group>
                         </group>
                     </sheet>

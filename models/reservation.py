@@ -1,5 +1,5 @@
 from odoo import fields, models, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class ReservationMesa(models.Model):
@@ -12,6 +12,13 @@ class ReservationMesa(models.Model):
     guest_name = fields.Char(string='Reservation Name', required=False, help="Name to book under when there is no linked guest record, e.g. a phone booking.")
     reservation_time = fields.Datetime(string='Reservation Time', required=True)
     party_size = fields.Integer(string='Party Size', required=True, help="Number of guests expected.")
+    state = fields.Selection([
+        ('booked', 'Booked'),
+        ('seated', 'Seated'),
+        ('cancelled', 'Cancelled'),
+    ], string='State', required=True, default='booked')
+    table_id = fields.Many2one('mesa.table', string='Table', required=False,
+                               help="Table the party will be seated at. Needed before pressing Seat.")
 
     visit_ids = fields.One2many('mesa.visit', 'reservation_id', string='Visits')
 
@@ -34,6 +41,22 @@ class ReservationMesa(models.Model):
         for reservation in self:
             if not reservation.guest_id and not reservation.guest_name:
                 raise ValidationError('Pick a guest or fill in the reservation name.')
+
+    def action_seat(self):
+        to_seat = self.filtered(lambda reservation: reservation.state == 'booked')
+        for reservation in to_seat:
+            if not reservation.table_id:
+                raise UserError('Pick a table before seating this reservation.')
+            # visit.create checks the table is free and marks it busy
+            self.env['mesa.visit'].create({
+                'table_id': reservation.table_id.id,
+                'reservation_id': reservation.id,
+            })
+        to_seat.write({'state': 'seated'})
+
+    def action_cancel(self):
+        to_cancel = self.filtered(lambda reservation: reservation.state == 'booked')
+        to_cancel.write({'state': 'cancelled'})
 
     @api.depends('guest_id.name', 'guest_id.surname', 'guest_name', 'reservation_time')
     def _compute_name(self):
