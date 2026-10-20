@@ -29,5 +29,8 @@ access_mesa_reservation_server,mesa.reservation.server,model_mesa_reservation,gr
 access_mesa_menu_item_server,mesa.menu_item.server,model_mesa_menu_item,group_server,1,0,0,0
 access_mesa_kitchen_ticket_server,mesa.kitchen.ticket.server,model_mesa_kitchen_ticket,group_server,1,0,0,0
 access_mesa_employee_server,mesa.employee.server,model_mesa_employee,group_server,1,0,0,0
+access_mesa_shift_server,mesa.shift.server,model_mesa_shift,group_server,1,0,0,0
+access_mesa_station_server,mesa.station.server,model_mesa_station,group_server,1,0,0,0
+access_mesa_position_server,mesa.position.server,model_mesa_position,group_server,1,0,0,0
 access_mesa_payment_server,mesa.payment.server,model_mesa_payment,group_server,1,1,1,0
 access_mesa_sales_report_wizard_staff,mesa.sales.report.wizard.staff,model_mesa_sales_report_wizard,group_mesa_staff,1,1,1,1

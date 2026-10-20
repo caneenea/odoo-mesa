@@ -17,6 +17,12 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,preparing,ready,served,billed"/>
                     </header>
                     <sheet>
+                        <div class="oe_title">
+                            <label for="code"/>
+                            <h1>
+                                <field name="code"/>
+                            </h1>
+                        </div>
                         <group>
                             <field name="visit_id"/>
                             <field name="time" readonly="id != False"/>
@@ -63,6 +69,7 @@
             <field name="model">mesa.order</field>
             <field name="arch" type="xml">
                 <tree string="Orders" decoration-danger="status == 'rush'" decoration-muted="state == 'cancelled'">
+                    <field name="code"/>
                     <field name="time"/>
                     <field name="visit_id"/>
                     <field name="status" widget="badge"
@@ -124,6 +131,7 @@
             <field name="model">mesa.order</field>
             <field name="arch" type="xml">
                 <search string="Orders">
+                    <field name="code"/>
                     <field name="visit_id"/>
                     <field name="time"/>
                     <field name="status"/>

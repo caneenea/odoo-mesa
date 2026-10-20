@@ -5,11 +5,12 @@ from odoo.exceptions import UserError
 class OrderMesa(models.Model):
     _name = 'mesa.order'
     _description = 'Order Mesa'
-    _rec_name = 'time'
+    _rec_name = 'code'
     _order = 'time desc'
 
 
-    time = fields.Datetime(string='Time', required=True, default=lambda self: fields.Datetime.now())
+    code = fields.Char(string="Order Number", readonly=True)
+    time =fields.Datetime(string='Time', required=True, default=lambda self: fields.Datetime.now())
     status = fields.Selection([
         ('normal', 'Normal'),
         ('rush', 'Rush'),
@@ -40,6 +41,7 @@ class OrderMesa(models.Model):
             visit = self.env['mesa.visit'].browse(values['visit_id'])
             if visit.state == 'closed':
                 raise UserError("You can't add an order to a closed visit. Reopen the visit first.")
+        values['code'] = self.env['ir.sequence'].next_by_code('mesa.order')
         return super().create(values)
 
     @api.depends('order_item_ids.total')
@@ -126,6 +128,8 @@ class OrderMesa(models.Model):
                 order._send_items(new_items)
 
     def action_serve(self):
+        if self.filtered(lambda order: order.state != 'ready'):
+            raise UserError('Only orders that are Ready can be marked as served.')
         for order in self:
             unsent = order.order_item_ids.filtered(lambda i: not i.is_ticketed)
             if unsent:

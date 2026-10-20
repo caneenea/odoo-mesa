@@ -26,4 +26,8 @@ class TableMesa(models.Model):
         ('table_num_uniq', 'UNIQUE(table_num)', 'A table with this number already exists.'),
     ]
 
+    def action_mark_clean(self):
+        to_clean = self.filtered(lambda table: table.table_status == 'needs_cleaning')
+        to_clean.write({'table_status': 'free'})
+
 

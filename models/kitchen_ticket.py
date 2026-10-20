@@ -37,11 +37,12 @@ class KitchenTicketMesa(models.Model):
 
     @api.depends('order_id.visit_id.table_id.table_num', 'station_id.type', 'round')
     def _compute_name(self):
+        # same label lookup as the payment name in payment.py: 'pantry' -> 'Pantry'
+        station_labels = dict(self.env['mesa.station']._fields['type'].selection)
         for ticket in self:
             visit = ticket.order_id.visit_id.sudo()
             table_label = visit.table_id.table_num if visit.table_id else 'No Table'
-            # the station's display name is its type label, e.g. "Pantry"
-            station_label = ticket.station_id.display_name if ticket.station_id else 'Station'
+            station_label = station_labels.get(ticket.station_id.type, 'Station')
             ticket.name = "%s - %s" % (table_label, station_label)
             if ticket.round > 1:
                 ticket.name += " (Round %s)" % ticket.round

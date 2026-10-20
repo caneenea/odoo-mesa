@@ -9,6 +9,7 @@
     'depends': ['base', 'web'],
     'data': ['security/security.xml',
              'security/ir.model.access.csv',
+             'data/order_sequence.xml',
              'views/employee_view.xml',
              'views/position_view.xml',
              'views/shift_view.xml',
@@ -31,5 +32,6 @@
     'installable': True,
     'auto_install': False,
     'application': True,
+    'license': 'LGPL-3',
 }
 
