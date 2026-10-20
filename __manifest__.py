@@ -1,4 +1,3 @@
-
 {
     'name': 'Mesa',
     'version': '1.0',
@@ -7,8 +6,10 @@
     'category': 'My Project',
     'author': 'Enea Cane',
     'website': 'Website',
-    'depends': ['base'],
-    'data': ['views/employee_view.xml',
+    'depends': ['base', 'web'],
+    'data': ['security/security.xml',
+             'security/ir.model.access.csv',
+             'views/employee_view.xml',
              'views/position_view.xml',
              'views/shift_view.xml',
              'views/guest_view.xml',
@@ -22,9 +23,13 @@
              "views/order_view.xml",
              'views/order_item_view.xml',
              'views/payment_view.xml',
+             'views/kitchen_ticket_view.xml',
+             'report/sales_report_view.xml',
+             'wizard/sales_report_wizard_view.xml',
              ],
     'demo': [],
     'installable': True,
     'auto_install': False,
     'application': True,
 }
+

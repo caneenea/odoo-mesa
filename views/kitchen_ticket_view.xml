@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="kitchen_ticket_form_view" model="ir.ui.view">
+            <field name="name">mesa.kitchen.ticket.form</field>
+            <field name="model">mesa.kitchen.ticket</field>
+            <field name="arch" type="xml">
+                <form string="Kitchen Ticket">
+                    <header>
+                        <button name="action_start" type="object" string="Start" class="oe_highlight" invisible="state != 'new'"/>
+                        <button name="action_ready" type="object" string="Ready" class="oe_highlight" invisible="state in ('ready', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,preparing,ready"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="order_id"/>
+                                <field name="order_status"/>
+                                <field name="round"/>
+                            </group>
+                            <group>
+                                <field name="time_sent"/>
+                                <field name="time_started"/>
+                                <field name="time_ready"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Items">
+                                <field name="ticket_line_ids">
+                                    <tree>
+                                        <field name="order_item_id"/>
+                                        <field name="quantity"/>
+                                        <field name="done" widget="boolean_toggle"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kitchen_ticket_kanban_view" model="ir.ui.view">
+            <field name="name">mesa.kitchen.ticket.kanban</field>
+            <field name="model">mesa.kitchen.ticket</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state">
+                    <field name="name"/>
+                    <field name="items_summary"/>
+                    <field name="order_status"/>
+                    <field name="state"/>
+                    <field name="time_sent"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_card">
+                                <div class="oe_kanban_content">
+                                    <strong><field name="name"/></strong>
+                                    <field name="order_status" widget="badge"
+                                           decoration-danger="order_status == 'rush'"
+                                           decoration-success="order_status == 'normal'"/>
+                                    <div style="white-space: pre-line;">
+                                        <field name="items_summary"/>
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="time_sent"/>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <button name="action_start" type="object" string="Start"
+                                            class="btn btn-sm btn-secondary" invisible="state != 'new'"/>
+                                    <button name="action_ready" type="object" string="Ready"
+                                            class="btn btn-sm btn-success" invisible="state in ('ready', 'cancelled')"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="kitchen_ticket_search_view" model="ir.ui.view">
+            <field name="name">mesa.kitchen.ticket.search</field>
+            <field name="model">mesa.kitchen.ticket</field>
+            <field name="arch" type="xml">
+                <search string="Kitchen Tickets">
+                    <field name="name"/>
+                    <field name="station_id"/>
+                    <field name="order_id"/>
+                    <separator/>
+                    <filter string="Active" name="filter_active" domain="[('state', 'in', ('new', 'preparing'))]"/>
+                    <filter string="Completed" name="filter_completed" domain="[('state', '=', 'ready')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Station" name="group_by_station" context="{'group_by': 'station_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kitchen_ticket_act_window" model="ir.actions.act_window">
+            <field name="name">Kitchen Tickets</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.kitchen.ticket</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="search_view_id" ref="kitchen_ticket_search_view"/>
+            <field name="context">{'search_default_filter_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No kitchen tickets yet
+                </p>
+                <p>
+                    Tickets are created automatically, grouped by station, when an order is sent to the kitchen.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="kitchen_menu" name="Kitchen" parent="store_root" sequence="45"/>
+        <menuitem name="Tickets" id="kitchen_ticket_menu" parent="kitchen_menu" action="kitchen_ticket_act_window" sequence="10"/>
+
+    </data>
+</odoo>

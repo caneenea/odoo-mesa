@@ -19,7 +19,7 @@
                                 <field name="stock_qty"/>
                             </group>
                             <group>
-                                <field name="station_id"/>
+                                <field name="station_ids" widget="many2many_tags"/>
                                 <field name="category_ids" widget="many2many_tags"/>
                             </group>
                         </group>
@@ -35,7 +35,7 @@
                 <tree string="Menu Items">
                     <field name="name"/>
                     <field name="category_ids" widget="many2many_tags" optional="show"/>
-                    <field name="station_id" optional="show"/>
+                    <field name="station_ids" widget="many2many_tags" optional="show"/>
                     <field name="price"/>
                     <field name="stock_qty" optional="hide"/>
                 </tree>
@@ -49,11 +49,11 @@
                 <search string="Menu Items">
                     <field name="name"/>
                     <field name="category_ids"/>
-                    <field name="station_id"/>
+                    <field name="station_ids"/>
                     <field name="price"/>
                     <group expand="0" string="Group By">
                         <filter string="Category" name="group_by_category" context="{'group_by': 'category_ids'}"/>
-                        <filter string="Station" name="group_by_station" context="{'group_by': 'station_id'}"/>
+                        <filter string="Station" name="group_by_station" context="{'group_by': 'station_ids'}"/>
                     </group>
                 </search>
             </field>

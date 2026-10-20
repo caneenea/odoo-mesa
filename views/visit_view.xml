@@ -15,13 +15,13 @@
                     <sheet>
                         <div class="oe_title">
                             <h1>
-                                <field name="time_opened" placeholder="Time Opened"/>
+                                <field name="time_opened" placeholder="Time Opened" readonly="id != False"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="time_closed" placeholder="Still open"/>
-                                <field name="table_id"/>
+                                <field name="table_id" readonly="id != False"/>
                             </group>
                             <group>
                                 <field name="server_id"/>

@@ -1,4 +1,5 @@
 from odoo import fields, models, api
+from odoo.exceptions import ValidationError
 
 
 class ReservationMesa(models.Model):
@@ -15,6 +16,24 @@ class ReservationMesa(models.Model):
     visit_ids = fields.One2many('mesa.visit', 'reservation_id', string='Visits')
 
     _order = 'reservation_time'
+
+    _sql_constraints = [
+        ('party_size_positive', 'CHECK(party_size >= 1)', 'Party size must be at least 1.'),
+    ]
+
+    @api.constrains('reservation_time')
+    def _check_reservation_time(self):
+        # only runs when the time is set or changed, so past reservations already in the system stay valid
+        now = fields.Datetime.now()
+        for reservation in self:
+            if reservation.reservation_time < now:
+                raise ValidationError('A reservation can not be made in the past.')
+
+    @api.constrains('guest_id', 'guest_name')
+    def _check_guest(self):
+        for reservation in self:
+            if not reservation.guest_id and not reservation.guest_name:
+                raise ValidationError('Pick a guest or fill in the reservation name.')
 
     @api.depends('guest_id.name', 'guest_id.surname', 'guest_name', 'reservation_time')
     def _compute_name(self):

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="sales_report_wizard_form_view" model="ir.ui.view">
+            <field name="name">mesa.sales.report.wizard.form</field>
+            <field name="model">mesa.sales.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sales Report">
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="menu_item_ids" widget="many2many_tags"/>
+                    </group>
+                    <footer>
+                        <button name="print_sales_lines"
+                                string="Sales Lines (PDF)"
+                                type="object"
+                                data-hotkey="q"
+                                class="btn-primary"/>
+                        <button name="print_sales_by_item"
+                                string="Totals per Item"
+                                type="object"
+                                data-hotkey="w"
+                                class="btn-secondary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="sales_report_wizard_act_window" model="ir.actions.act_window">
+            <field name="name">Sales Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mesa.sales.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="sales_report_wizard_form_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="reports_menu" name="Reports" parent="store_root" sequence="900"/>
+        <menuitem id="sales_report_menu" name="Sales Report" parent="reports_menu"
+                  action="sales_report_wizard_act_window" sequence="10"/>
+
+    </data>
+</odoo>

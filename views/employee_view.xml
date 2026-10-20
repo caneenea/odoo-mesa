@@ -17,6 +17,8 @@
                         <group>
                             <group string="Employment">
                                 <field name="position_id"/>
+                                <field name="user_id"/>
+                                <field name="station_ids" widget="many2many_tags"/>
                                 <field name="salary"/>
                                 <field name="hire_date"/>
                                 <field name="last_date"/>

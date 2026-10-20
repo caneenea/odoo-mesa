@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="mesa_category" model="ir.module.category">
+            <field name="name">Mesa</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="group_mesa_staff" model="res.groups">
+            <field name="name">Mesa Staff</field>
+            <field name="category_id" ref="mesa_category"/>
+            <field name="comment">Full access to every Mesa model. Everyone except kitchen-only cooks should be in this group.</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_mesa_manager" model="res.groups">
+            <field name="name">Mesa Manager</field>
+            <field name="category_id" ref="mesa_category"/>
+            <field name="comment">Everything Mesa Staff can do, plus sensitive data such as employee salaries.</field>
+            <field name="implied_ids" eval="[(4, ref('group_mesa_staff'))]"/>
+        </record>
+
+        <record id="group_cook" model="res.groups">
+            <field name="name">Cook</field>
+            <field name="category_id" ref="mesa_category"/>
+            <field name="comment">Kitchen-only access: tickets for their own stations, plus read-only orders/items/menu items. No access to payments, salaries or guests.</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_server" model="res.groups">
+            <field name="name">Server</field>
+            <field name="category_id" ref="mesa_category"/>
+            <field name="comment">Visits, orders and order items (create/edit), plus read-only tables/guests/reservations/menu items. No staffing, salaries or payments management.</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="visit_see_own" model="ir.rule">
+            <field name="name">Servers see only their own visits</field>
+            <field name="model_id" ref="model_mesa_visit"/>
+            <field name="domain_force">[('server_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_server'))]"/>
+        </record>
+
+        <record id="order_see_own" model="ir.rule">
+            <field name="name">Servers see only their own orders</field>
+            <field name="model_id" ref="model_mesa_order"/>
+            <field name="domain_force">[('visit_id.server_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_server'))]"/>
+        </record>
+
+        <record id="payment_see_own" model="ir.rule">
+            <field name="name">Servers see only their own visits' payments</field>
+            <field name="model_id" ref="model_mesa_payment"/>
+            <field name="domain_force">[('visit_id.server_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_server'))]"/>
+        </record>
+
+        <record id="ticket_see_own_station" model="ir.rule">
+            <field name="name">Cooks see only their stations' tickets</field>
+            <field name="model_id" ref="model_mesa_kitchen_ticket"/>
+            <field name="domain_force">[('station_id.employee_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_cook'))]"/>
+        </record>
+
+        <record id="ticket_line_see_own_station" model="ir.rule">
+            <field name="name">Cooks see only their stations' ticket lines</field>
+            <field name="model_id" ref="model_mesa_kitchen_ticket_line"/>
+            <field name="domain_force">[('ticket_id.station_id.employee_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_cook'))]"/>
+        </record>
+
+    </data>
+</odoo>

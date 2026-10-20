@@ -22,4 +22,8 @@ class TableMesa(models.Model):
 
     _order = 'table_num'
 
+    _sql_constraints = [
+        ('table_num_uniq', 'UNIQUE(table_num)', 'A table with this number already exists.'),
+    ]
+
 

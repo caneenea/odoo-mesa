@@ -22,3 +22,7 @@ class PositionMesa(models.Model):
     )
 
     _order = 'department, title'
+
+    _sql_constraints = [
+        ('base_pay_non_negative', 'CHECK(base_pay >= 0)', 'Base pay can not be negative.'),
+    ]

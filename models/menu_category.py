@@ -9,3 +9,7 @@ class MenuCategoryMesa(models.Model):
     description = fields.Char(string='Description', required=False)
 
     _order = 'name'
+
+    _sql_constraints = [
+        ('name_uniq', 'UNIQUE(name)', 'A category with this name already exists.'),
+    ]

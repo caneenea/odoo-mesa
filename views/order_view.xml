@@ -9,27 +9,46 @@
                 <form string="Order">
                     <header>
                         <button name="action_send" type="object" string="Send to Kitchen" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button name="action_serve" type="object" string="Mark Served" class="oe_highlight" invisible="state != 'sent'"/>
+                        <button name="action_send_new_items" type="object" string="Send New Items" class="oe_highlight"
+                                invisible="state not in ('sent', 'preparing', 'ready') or not has_unsent_items"/>
+                        <button name="action_serve" type="object" string="Mark Served" class="oe_highlight" invisible="state != 'ready'"/>
                         <button name="action_bill" type="object" string="Bill" class="oe_highlight" invisible="state != 'served'"/>
                         <button name="action_cancel" type="object" string="Cancel" invisible="state in ('billed', 'cancelled')"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,served,billed"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,preparing,ready,served,billed"/>
                     </header>
                     <sheet>
                         <group>
                             <field name="visit_id"/>
-                            <field name="time"/>
+                            <field name="time" readonly="id != False"/>
                             <field name="status" widget="badge" decoration-danger="status == 'rush'" decoration-success="status == 'normal'"/>
                             <field name="total"/>
+                            <field name="has_unsent_items" readonly="1" invisible="state == 'draft'"/>
                         </group>
                         <notebook>
                             <page string="Items">
-                                <field name="order_item_ids">
+                                <field name="order_item_ids" readonly="state in ('served', 'billed', 'cancelled')">
                                     <tree editable="bottom">
-                                        <field name="menu_item_id"/>
-                                        <field name="quantity"/>
+                                        <field name="menu_item_id" readonly="is_ticketed"/>
+                                        <field name="quantity" readonly="is_ticketed"/>
                                         <field name="price"/>
                                         <field name="total"/>
                                         <field name="notes"/>
+                                        <field name="is_ticketed" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Kitchen Tickets">
+                                <field name="ticket_ids" readonly="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="state" widget="badge"
+                                               decoration-info="state == 'new'"
+                                               decoration-warning="state == 'preparing'"
+                                               decoration-success="state == 'ready'"
+                                               decoration-muted="state == 'cancelled'"/>
+                                        <field name="time_sent"/>
+                                        <field name="time_started"/>
+                                        <field name="time_ready"/>
                                     </tree>
                                 </field>
                             </page>
@@ -50,6 +69,7 @@
                            decoration-danger="status == 'rush'"
                            decoration-success="status == 'normal'"/>
                     <field name="state" widget="badge"/>
+                    <field name="has_unsent_items" string="Unsent"/>
                     <field name="total"/>
                 </tree>
             </field>
@@ -116,6 +136,7 @@
                                      ('time', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
                     <separator/>
                     <filter string="Active" name="filter_active_state" domain="[('state', 'not in', ('billed', 'cancelled'))]"/>
+                    <filter string="Unsent Items" name="filter_unsent" domain="[('has_unsent_items', '=', True), ('state', 'in', ('sent', 'preparing', 'ready'))]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
                         <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>

@@ -13,6 +13,9 @@
                                 <field name="type"/>
                             </h1>
                         </div>
+                        <group>
+                            <field name="employee_ids" widget="many2many_tags"/>
+                        </group>
                         <notebook>
                             <page string="Menu Items">
                                 <field name="menu_item_ids">

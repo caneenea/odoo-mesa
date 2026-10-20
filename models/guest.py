@@ -1,4 +1,5 @@
 from odoo import fields, models, api
+from odoo.exceptions import ValidationError
 
 
 class GuestMesa(models.Model):
@@ -19,6 +20,17 @@ class GuestMesa(models.Model):
     points = fields.Float(string='Loyalty Points', default=0, help="Accumulated loyalty points for this guest.")
 
     _order = 'surname, name'
+
+    _sql_constraints = [
+        ('points_non_negative', 'CHECK(points >= 0)', 'Loyalty points can not be negative.'),
+    ]
+
+    @api.constrains('birth_date')
+    def _check_birth_date(self):
+        today = fields.Date.today()
+        for guest in self:
+            if guest.birth_date and guest.birth_date > today:
+                raise ValidationError('The birth date can not be in the future.')
 
     @api.depends('name', 'surname')
     def _compute_full_name(self):

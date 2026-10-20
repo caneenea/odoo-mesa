@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Report 1: every sold line, as a PDF -->
+        <record id="action_report_sales_lines" model="ir.actions.report">
+            <field name="name">Sales Lines</field>
+            <field name="model">mesa.order_item</field>
+            <field name="report_name">mesa.report_sales_lines</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_file">sales_report</field>
+        </record>
+
+        <!-- key must equal the action's report_name; without it the key would be 'Mesa.report_sales_lines' -->
+        <template id="report_sales_lines" key="mesa.report_sales_lines">
+            <t t-set="data_report_landscape" t-value="True"/>
+            <t t-set="full_width" t-value="True"/>
+            <t t-call="web.html_container">
+                <h3>Sales Lines</h3>
+                <h4 t-esc="report_name"/>
+                <div>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date (UTC)</th>
+                                <th>Visit</th>
+                                <th>Menu Item</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total" t-value="0"/>
+                            <t t-set="quantity" t-value="0"/>
+                            <!-- for o in docs -->
+                            <t t-foreach="docs" t-as="o">
+                                <!-- total += o['total'] -->
+                                <t t-set="total" t-value="total + o['total']"/>
+                                <t t-set="quantity" t-value="quantity + o['quantity']"/>
+                                <tr>
+                                    <td>
+                                        <span t-esc="o['date']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o['visit']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o['menu_item']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o['quantity']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f' % o['price']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f' % o['total']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"/>
+                                <td>
+                                    <span t-esc="quantity"/>
+                                </td>
+                                <td/>
+                                <td>
+                                    <span t-esc="'%.2f' % total"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </t>
+        </template>
+
+        <!-- Report 2: totals grouped per menu item, shown in the browser -->
+        <record id="action_report_sales_by_item" model="ir.actions.report">
+            <field name="name">Sales Totals per Item</field>
+            <field name="model">mesa.order_item</field>
+            <field name="report_name">mesa.report_sales_by_item</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_file">sales_report</field>
+        </record>
+
+        <template id="report_sales_by_item" key="mesa.report_sales_by_item">
+            <t t-set="full_width" t-value="True"/>
+            <t t-call="web.html_container">
+                <h3>Sales Totals per Item</h3>
+                <h4 t-esc="report_name"/>
+                <div>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Menu Item</th>
+                                <th>Quantity Sold</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total" t-value="0"/>
+                            <t t-set="quantity" t-value="0"/>
+                            <!-- for o in docs: o is the menu item id, docs[o] its totals -->
+                            <t t-foreach="docs" t-as="o">
+                                <t t-set="total" t-value="total + docs[o]['revenue']"/>
+                                <t t-set="quantity" t-value="quantity + docs[o]['quantity']"/>
+                                <tr>
+                                    <td>
+                                        <span t-esc="docs[o]['menu_item']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="docs[o]['quantity']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f' % docs[o]['revenue']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td/>
+                                <td>
+                                    <span t-esc="quantity"/>
+                                </td>
+                                <td>
+                                    <span t-esc="'%.2f' % total"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>
